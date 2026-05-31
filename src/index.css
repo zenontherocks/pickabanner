@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.banner-pin {
+  width: 44px;
+  height: 44px;
+  background: white;
+  border: 2.5px solid #4338ca;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.banner-pin span {
+  transform: rotate(45deg);
+  font-size: 22px;
+  line-height: 1;
+  display: block;
+}

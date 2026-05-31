@@ -1,0 +1,12 @@
+name = "pickabanner"
+main = "worker/index.ts"
+compatibility_date = "2024-09-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pickabanner-db"
+database_id = "5ac79dc9-4480-414a-9ed0-f6c49b665dc0"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
