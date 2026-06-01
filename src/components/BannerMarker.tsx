@@ -9,11 +9,20 @@ interface BannerMarkerProps {
   lng: number;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export default function BannerMarker({ banner, lat, lng }: BannerMarkerProps) {
   const icon = useMemo(
     () =>
       L.divIcon({
-        html: `<div class="banner-pin"><span>${banner.character}</span></div>`,
+        html: `<div class="banner-pin"><span>${escapeHtml(banner.character)}</span></div>`,
         className: '',
         iconSize: [44, 52],
         iconAnchor: [22, 52],
