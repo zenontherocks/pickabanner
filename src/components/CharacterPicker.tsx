@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import EmojiPicker, { type EmojiClickData } from 'emoji-picker-react';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 const FLAG_EMOJIS = [
   '🇺🇸','🇬🇧','🇨🇦','🇦🇺','🇩🇪','🇫🇷','🇯🇵','🇨🇳','🇮🇳','🇧🇷',
@@ -20,14 +21,8 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
   const [tab, setTab] = useState<Tab>('emoji');
   const [customInput, setCustomInput] = useState('');
 
-  function handleEmojiClick(data: EmojiClickData) {
-    onChange(data.emoji);
-  }
-
   function handleCustomChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value;
-    const chars = [...raw];
-    const first = chars[0] ?? '';
+    const first = [...e.target.value][0] ?? '';
     setCustomInput(first);
     if (first) onChange(first);
   }
@@ -58,9 +53,14 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
       </div>
 
       {tab === 'emoji' && (
-        <div className="flex justify-center">
-          <EmojiPicker onEmojiClick={handleEmojiClick} height={320} width="100%" />
-        </div>
+        <Picker
+          data={data}
+          onEmojiSelect={(e: { native: string }) => onChange(e.native)}
+          previewPosition="none"
+          skinTonePosition="none"
+          theme="light"
+          set="native"
+        />
       )}
 
       {tab === 'flag' && (
