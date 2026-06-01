@@ -399,7 +399,8 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
   }
 
   function handlePaste(e: React.ChangeEvent<HTMLInputElement>) {
-    const first = [...e.target.value][0] ?? '';
+    const segments = [...new Intl.Segmenter().segment(e.target.value)];
+    const first = segments[0]?.segment ?? '';
     setPasteInput(first);
     onChange(first);
   }
