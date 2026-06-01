@@ -58,7 +58,11 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
           style={{ height: '280px' }}
         >
           <EmojiPicker.Search className="w-full px-3 py-2 text-sm border-b border-gray-200 outline-none" placeholder="Search emoji…" />
-          <EmojiPicker.Viewport className="flex-1 overflow-y-auto" />
+          <EmojiPicker.Viewport className="flex-1 overflow-y-auto">
+            <EmojiPicker.Loading>Loading…</EmojiPicker.Loading>
+            <EmojiPicker.Empty>No emoji found.</EmojiPicker.Empty>
+            <EmojiPicker.List />
+          </EmojiPicker.Viewport>
         </EmojiPicker.Root>
       )}
 
