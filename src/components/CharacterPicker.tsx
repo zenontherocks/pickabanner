@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import Picker from '@emoji-mart/react';
-import data from '@emoji-mart/data';
+import { EmojiPicker } from 'frimousse';
 
 const FLAG_EMOJIS = [
   '🇺🇸','🇬🇧','🇨🇦','🇦🇺','🇩🇪','🇫🇷','🇯🇵','🇨🇳','🇮🇳','🇧🇷',
@@ -13,8 +12,8 @@ const FLAG_EMOJIS = [
 type Tab = 'emoji' | 'flag' | 'custom';
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'emoji', label: '😀 Emoji' },
-  { id: 'flag',  label: '🏳️ Flag' },
+  { id: 'emoji',  label: '😀 Emoji' },
+  { id: 'flag',   label: '🏳️ Flag' },
   { id: 'custom', label: '✏️ Custom' },
 ];
 
@@ -53,19 +52,18 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
       </div>
 
       {tab === 'emoji' && (
-        <Picker
-          data={data}
-          onEmojiSelect={(e: { native: string }) => onChange(e.native)}
-          previewPosition="none"
-          skinTonePosition="none"
-          theme="light"
-          set="native"
-          height={280}
-        />
+        <EmojiPicker.Root
+          onEmojiSelect={(emoji) => onChange(emoji.emoji)}
+          className="w-full rounded-lg border border-gray-200 overflow-hidden"
+          style={{ height: '280px' }}
+        >
+          <EmojiPicker.Search className="w-full px-3 py-2 text-sm border-b border-gray-200 outline-none" placeholder="Search emoji…" />
+          <EmojiPicker.Viewport className="flex-1 overflow-y-auto" />
+        </EmojiPicker.Root>
       )}
 
       {tab === 'flag' && (
-        <div className="grid grid-cols-8 gap-1 max-h-48 overflow-y-auto p-1">
+        <div className="grid grid-cols-8 gap-1 max-h-[280px] overflow-y-auto p-1">
           {FLAG_EMOJIS.map((flag) => (
             <button
               key={flag}
