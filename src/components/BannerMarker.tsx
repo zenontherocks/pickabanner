@@ -5,9 +5,11 @@ import type { Banner } from '../lib/types';
 
 interface BannerMarkerProps {
   banner: Banner;
+  lat: number;
+  lng: number;
 }
 
-export default function BannerMarker({ banner }: BannerMarkerProps) {
+export default function BannerMarker({ banner, lat, lng }: BannerMarkerProps) {
   const icon = useMemo(
     () =>
       L.divIcon({
@@ -21,7 +23,7 @@ export default function BannerMarker({ banner }: BannerMarkerProps) {
   );
 
   return (
-    <Marker position={[banner.lat, banner.lng]} icon={icon}>
+    <Marker position={[lat, lng]} icon={icon}>
       <Popup>
         <div className="text-center min-w-[140px]">
           <div className="text-5xl mb-2">{banner.character}</div>
