@@ -12,6 +12,12 @@ const FLAG_EMOJIS = [
 
 type Tab = 'emoji' | 'flag' | 'custom';
 
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'emoji', label: '😀 Emoji' },
+  { id: 'flag',  label: '🏳️ Flag' },
+  { id: 'custom', label: '✏️ Custom' },
+];
+
 interface CharacterPickerProps {
   value: string;
   onChange: (char: string) => void;
@@ -29,25 +35,19 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
 
   return (
     <div>
-      {value && (
-        <div className="text-center mb-3">
-          <span className="text-5xl">{value}</span>
-        </div>
-      )}
-
-      <div className="flex gap-1 mb-3">
-        {(['emoji', 'flag', 'custom'] as Tab[]).map((t) => (
+      <div className="flex gap-1 mb-2">
+        {TABS.map((t) => (
           <button
-            key={t}
+            key={t.id}
             type="button"
-            onClick={() => setTab(t)}
-            className={`flex-1 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${
-              tab === t
+            onClick={() => setTab(t.id)}
+            className={`flex-1 py-1 text-xs font-medium rounded-md transition-colors ${
+              tab === t.id
                 ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t}
+            {t.label}
           </button>
         ))}
       </div>
@@ -60,6 +60,7 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
           skinTonePosition="none"
           theme="light"
           set="native"
+          height={280}
         />
       )}
 
@@ -81,7 +82,7 @@ export default function CharacterPicker({ value, onChange }: CharacterPickerProp
       )}
 
       {tab === 'custom' && (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-3 py-4">
           <input
             type="text"
             value={customInput}
