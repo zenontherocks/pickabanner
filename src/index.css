@@ -27,3 +27,8 @@ html, body, #root {
   line-height: 1;
   display: block;
 }
+
+/* hide the emoji picker's default preview bar */
+.epr-preview {
+  display: none !important;
+}

@@ -82,7 +82,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
         <form onSubmit={handleSubmit} className="px-5 py-4 flex flex-col gap-5">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Banner Character
+              Choose your banner
             </label>
             <CharacterPicker value={character} onChange={setCharacter} />
           </div>
