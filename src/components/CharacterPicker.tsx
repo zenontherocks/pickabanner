@@ -6,7 +6,7 @@ interface CharacterPickerProps {
 export default function CharacterPicker({ value, onChange }: CharacterPickerProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const first = [...e.target.value][0] ?? '';
-    if (first) onChange(first);
+    onChange(first);
   }
 
   return (
