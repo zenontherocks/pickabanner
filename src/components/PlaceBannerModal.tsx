@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { geocode } from '../lib/geocode';
 import { createBanner } from '../lib/api';
 import type { Banner } from '../lib/types';
-import CharacterPicker from './CharacterPicker';
+import ColorPicker from './CharacterPicker';
+
+const DEFAULT_COLOR = '#6366f1';
 
 interface PlaceBannerModalProps {
   open: boolean;
@@ -11,7 +13,7 @@ interface PlaceBannerModalProps {
 }
 
 export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBannerModalProps) {
-  const [character, setCharacter] = useState('');
+  const [color, setColor] = useState(DEFAULT_COLOR);
   const [locationInput, setLocationInput] = useState('');
   const [note, setNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -20,7 +22,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
   if (!open) return null;
 
   function reset() {
-    setCharacter('');
+    setColor(DEFAULT_COLOR);
     setLocationInput('');
     setNote('');
     setError(null);
@@ -34,7 +36,6 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!character) { setError('Please pick a character for your banner.'); return; }
     if (!locationInput.trim()) { setError('Please enter a location.'); return; }
     if (note.length > 128) { setError('Note must be 128 characters or fewer.'); return; }
 
@@ -50,7 +51,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
 
     try {
       const banner = await createBanner({
-        character,
+        character: color,
         locationInput: locationInput.trim(),
         lat: geo.lat,
         lng: geo.lng,
@@ -70,24 +71,14 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-800">Place a Banner</h2>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
-          >
-            ×
-          </button>
+          <button type="button" onClick={handleClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-5 py-4 flex flex-col gap-5">
-          <div>
-            <CharacterPicker value={character} onChange={setCharacter} />
-          </div>
+          <ColorPicker value={color} onChange={setColor} />
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Location
-            </label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Location</label>
             <input
               type="text"
               value={locationInput}
@@ -113,24 +104,12 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-              {error}
-            </div>
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>
           )}
 
           <div className="flex gap-3 pt-1">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="flex-1 border border-gray-300 text-gray-700 rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg py-2 text-sm font-semibold transition-colors"
-            >
+            <button type="button" onClick={handleClose} className="flex-1 border border-gray-300 text-gray-700 rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-colors">Cancel</button>
+            <button type="submit" disabled={submitting} className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg py-2 text-sm font-semibold transition-colors">
               {submitting ? 'Placing…' : 'Place Banner'}
             </button>
           </div>

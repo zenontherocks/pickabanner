@@ -9,33 +9,26 @@ interface BannerMarkerProps {
   lng: number;
 }
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 export default function BannerMarker({ banner, lat, lng }: BannerMarkerProps) {
+  const color = /^#[0-9a-fA-F]{3,6}$/.test(banner.character) ? banner.character : '#6366f1';
+
   const icon = useMemo(
     () =>
       L.divIcon({
-        html: `<div class="banner-pin"><span>${escapeHtml(banner.character)}</span></div>`,
+        html: `<div class="banner-pin" style="background:${color};border-color:${color}"></div>`,
         className: '',
-        iconSize: [44, 52],
-        iconAnchor: [22, 52],
-        popupAnchor: [0, -54],
+        iconSize: [24, 32],
+        iconAnchor: [12, 32],
+        popupAnchor: [0, -34],
       }),
-    [banner.character]
+    [color]
   );
 
   return (
     <Marker position={[lat, lng]} icon={icon}>
       <Popup>
         <div className="text-center min-w-[140px]">
-          <div className="text-5xl mb-2">{banner.character}</div>
+          <div className="w-8 h-8 rounded-full mx-auto mb-2" style={{ background: color }} />
           <div className="text-sm font-medium text-gray-700">{banner.locationInput}</div>
           {banner.note && (
             <div className="text-sm text-gray-500 mt-1 max-w-[200px] break-words">{banner.note}</div>

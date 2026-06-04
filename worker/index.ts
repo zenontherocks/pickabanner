@@ -55,8 +55,8 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
 
   const { character, locationInput, lat, lng, note } = body as Record<string, unknown>;
 
-  if (typeof character !== 'string' || character.trim() === '') {
-    return json({ error: 'character is required' }, 400, cors);
+  if (typeof character !== 'string' || !/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(character)) {
+    return json({ error: 'character must be a valid hex color (e.g. #ff0000)' }, 400, cors);
   }
   if (typeof locationInput !== 'string' || locationInput.trim() === '') {
     return json({ error: 'locationInput is required' }, 400, cors);
