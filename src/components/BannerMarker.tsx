@@ -19,7 +19,7 @@ function parseColors(character: string): string[] {
 }
 
 function pinBackground(colors: string[], direction: string): string {
-  const d = direction === 'vertical' ? 'to right' : 'to bottom';
+  const d = direction === 'vertical' ? '135deg' : '45deg';
   if (colors.length === 1) return colors[0];
   if (colors.length === 2) return `linear-gradient(${d},${colors[0]} 50%,${colors[1]} 50%)`;
   return `linear-gradient(${d},${colors[0]} 33.3%,${colors[1]} 33.3% 66.6%,${colors[2]} 66.6%)`;
