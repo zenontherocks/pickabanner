@@ -78,34 +78,32 @@ interface ColorPickerProps {
 }
 
 export default function ColorPicker({ value, onChange }: ColorPickerProps) {
-  const [colors, setColors] = useState<[string, string, string]>(() => parseColors(value));
+  const [hsvs, setHsvs] = useState<[number, number, number][]>(() =>
+    parseColors(value).map(hexToHsv)
+  );
 
-  function setColor(i: number, hex: string) {
-    const next = [...colors] as [string, string, string];
-    next[i] = hex;
-    setColors(next);
-    onChange(next.join(','));
+  function updateHsv(i: number, h: number, s: number, v: number) {
+    const next = hsvs.map((c, j) => j === i ? [h, s, v] as [number, number, number] : c);
+    setHsvs(next);
+    onChange(next.map(([h, s, v]) => hsvToHex(h, s, v)).join(','));
   }
 
   return (
     <div className="flex flex-col gap-2">
       <label className="block text-sm font-semibold text-gray-700">Choose colors</label>
       <div className="flex gap-2">
-        {colors.map((hex, i) => {
-          const [h, s, v] = hexToHsv(hex);
-          return (
-            <div key={i} className="flex-1 flex flex-col gap-1.5">
-              <div className="h-5 rounded" style={{ background: hex }} />
-              <Sq h={h} s={s} v={v} onSV={(ns, nv) => setColor(i, hsvToHex(h, ns, nv))} />
-              <input
-                type="range" min={0} max={360} value={h}
-                className="color-slider w-full"
-                style={{ background: RAINBOW }}
-                onChange={e => setColor(i, hsvToHex(+e.target.value, s, v))}
-              />
-            </div>
-          );
-        })}
+        {hsvs.map(([h, s, v], i) => (
+          <div key={i} className="flex-1 flex flex-col gap-1.5">
+            <div className="h-5 rounded" style={{ background: hsvToHex(h, s, v) }} />
+            <Sq h={h} s={s} v={v} onSV={(ns, nv) => updateHsv(i, h, ns, nv)} />
+            <input
+              type="range" min={0} max={360} value={h}
+              className="color-slider w-full"
+              style={{ background: RAINBOW }}
+              onChange={e => updateHsv(i, +e.target.value, s, v)}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
