@@ -4,7 +4,7 @@ import { createBanner } from '../lib/api';
 import type { Banner } from '../lib/types';
 import ColorPicker from './CharacterPicker';
 
-const DEFAULT_COLOR = '#6366f1';
+const DEFAULT_COLOR = '#6366f1,#EC4899,#F59E0B';
 
 interface PlaceBannerModalProps {
   open: boolean;

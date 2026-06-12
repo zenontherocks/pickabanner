@@ -55,8 +55,9 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
 
   const { character, locationInput, lat, lng, note } = body as Record<string, unknown>;
 
-  if (typeof character !== 'string' || !/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(character)) {
-    return json({ error: 'character must be a valid hex color (e.g. #ff0000)' }, 400, cors);
+  const colorParts = typeof character === 'string' ? character.split(',').map(s => s.trim()) : [];
+  if (colorParts.length === 0 || colorParts.length > 3 || !colorParts.every(c => /^#[0-9a-fA-F]{6}$/.test(c))) {
+    return json({ error: 'character must be 1-3 comma-separated 6-digit hex colors' }, 400, cors);
   }
   if (typeof locationInput !== 'string' || locationInput.trim() === '') {
     return json({ error: 'locationInput is required' }, 400, cors);
@@ -76,13 +77,13 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
     `INSERT INTO banners (id, character, location_input, lat, lng, note, created_at)
      VALUES (?, ?, ?, ?, ?, ?, ?)`
   )
-    .bind(id, character.trim(), locationInput.trim(), lat, lng, noteStr, createdAt)
+    .bind(id, colorParts.join(','), locationInput.trim(), lat, lng, noteStr, createdAt)
     .run();
 
   return json(
     {
       id,
-      character: character.trim(),
+      character: colorParts.join(','),
       locationInput: locationInput.trim(),
       lat,
       lng,
