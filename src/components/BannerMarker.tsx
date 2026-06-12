@@ -12,22 +12,22 @@ interface BannerMarkerProps {
 function parseColors(character: string): string[] {
   const parts = character.split(',').map(s => s.trim()).filter(s => /^#[0-9a-fA-F]{6}$/.test(s));
   if (parts.length > 0) return parts;
-  // legacy 3-char hex
   if (/^#[0-9a-fA-F]{3}$/.test(character)) {
     return ['#' + [...character.slice(1)].map(c => c + c).join('')];
   }
   return ['#6366f1'];
 }
 
-function pinBackground(colors: string[]): string {
+function pinBackground(colors: string[], direction: string): string {
+  const d = direction === 'vertical' ? 'to right' : 'to bottom';
   if (colors.length === 1) return colors[0];
-  if (colors.length === 2) return `linear-gradient(to right,${colors[0]} 50%,${colors[1]} 50%)`;
-  return `linear-gradient(to right,${colors[0]} 33.3%,${colors[1]} 33.3% 66.6%,${colors[2]} 66.6%)`;
+  if (colors.length === 2) return `linear-gradient(${d},${colors[0]} 50%,${colors[1]} 50%)`;
+  return `linear-gradient(${d},${colors[0]} 33.3%,${colors[1]} 33.3% 66.6%,${colors[2]} 66.6%)`;
 }
 
 export default function BannerMarker({ banner, lat, lng }: BannerMarkerProps) {
   const colors = useMemo(() => parseColors(banner.character), [banner.character]);
-  const bg = pinBackground(colors);
+  const bg = useMemo(() => pinBackground(colors, banner.direction ?? 'horizontal'), [colors, banner.direction]);
 
   const icon = useMemo(
     () =>

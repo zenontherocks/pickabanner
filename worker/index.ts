@@ -24,7 +24,7 @@ function json(body: unknown, status = 200, extra: Record<string, string> = {}) {
 
 async function getBanners(env: Env, cors: Record<string, string>) {
   const { results } = await env.DB.prepare(
-    `SELECT id, character, location_input, lat, lng, note, created_at
+    `SELECT id, character, location_input, lat, lng, note, created_at, direction
      FROM banners ORDER BY created_at DESC`
   ).all();
 
@@ -36,6 +36,7 @@ async function getBanners(env: Env, cors: Record<string, string>) {
     lng: r.lng,
     note: r.note,
     createdAt: r.created_at,
+    direction: r.direction ?? 'horizontal',
   }));
 
   return json(banners, 200, cors);
@@ -53,7 +54,7 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
     return json({ error: 'Body must be an object' }, 400, cors);
   }
 
-  const { character, locationInput, lat, lng, note } = body as Record<string, unknown>;
+  const { character, locationInput, lat, lng, note, direction } = body as Record<string, unknown>;
 
   const colorParts = typeof character === 'string' ? character.split(',').map(s => s.trim()) : [];
   if (colorParts.length === 0 || colorParts.length > 3 || !colorParts.every(c => /^#[0-9a-fA-F]{6}$/.test(c))) {
@@ -72,12 +73,13 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
   const id = crypto.randomUUID();
   const createdAt = new Date().toISOString();
   const noteStr = typeof note === 'string' ? note.slice(0, 128) : '';
+  const directionStr = direction === 'vertical' ? 'vertical' : 'horizontal';
 
   await env.DB.prepare(
-    `INSERT INTO banners (id, character, location_input, lat, lng, note, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO banners (id, character, location_input, lat, lng, note, created_at, direction)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
-    .bind(id, colorParts.join(','), locationInput.trim(), lat, lng, noteStr, createdAt)
+    .bind(id, colorParts.join(','), locationInput.trim(), lat, lng, noteStr, createdAt, directionStr)
     .run();
 
   return json(
@@ -89,6 +91,7 @@ async function postBanner(request: Request, env: Env, cors: Record<string, strin
       lng,
       note: noteStr,
       createdAt,
+      direction: directionStr,
     },
     201,
     cors

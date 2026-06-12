@@ -12,6 +12,7 @@ export async function createBanner(payload: {
   lat: number;
   lng: number;
   note: string;
+  direction: string;
 }): Promise<Banner> {
   const res = await fetch('/api/banners', {
     method: 'POST',

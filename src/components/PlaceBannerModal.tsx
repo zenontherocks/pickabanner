@@ -4,7 +4,7 @@ import { createBanner } from '../lib/api';
 import type { Banner } from '../lib/types';
 import ColorPicker from './CharacterPicker';
 
-const DEFAULT_COLOR = '#6366f1,#EC4899,#F59E0B';
+const DEFAULT_COLOR = '#FFFFFF,#888888,#000000';
 
 interface PlaceBannerModalProps {
   open: boolean;
@@ -14,6 +14,7 @@ interface PlaceBannerModalProps {
 
 export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBannerModalProps) {
   const [color, setColor] = useState(DEFAULT_COLOR);
+  const [direction, setDirection] = useState<'horizontal' | 'vertical'>('horizontal');
   const [locationInput, setLocationInput] = useState('');
   const [note, setNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -23,6 +24,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
 
   function reset() {
     setColor(DEFAULT_COLOR);
+    setDirection('horizontal');
     setLocationInput('');
     setNote('');
     setError(null);
@@ -52,6 +54,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
     try {
       const banner = await createBanner({
         character: color,
+        direction,
         locationInput: locationInput.trim(),
         lat: geo.lat,
         lng: geo.lng,
@@ -76,6 +79,25 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
 
         <form onSubmit={handleSubmit} className="px-5 py-4 flex flex-col gap-5">
           <ColorPicker value={color} onChange={setColor} />
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Stripe direction</label>
+            <div className="flex gap-5">
+              {(['horizontal', 'vertical'] as const).map(d => (
+                <label key={d} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="direction"
+                    value={d}
+                    checked={direction === d}
+                    onChange={() => setDirection(d)}
+                    className="accent-indigo-600"
+                  />
+                  {d.charAt(0).toUpperCase() + d.slice(1)}
+                </label>
+              ))}
+            </div>
+          </div>
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">Location</label>

@@ -6,4 +6,5 @@ export interface Banner {
   lng: number;
   note: string;
   createdAt: string;
+  direction: string;
 }
