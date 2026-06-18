@@ -72,12 +72,20 @@ function Sq({ h, s, v, onSV }: { h: number; s: number; v: number; onSV: (s: numb
   );
 }
 
+function pinBackground(hexColors: string[], direction: string): string {
+  const d = direction === 'vertical' ? '135deg' : '225deg';
+  if (hexColors.length === 1) return hexColors[0];
+  if (hexColors.length === 2) return `linear-gradient(${d},${hexColors[0]} 50%,${hexColors[1]} 50%)`;
+  return `linear-gradient(${d},${hexColors[0]} 38%,${hexColors[1]} 38% 62%,${hexColors[2]} 62%)`;
+}
+
 interface ColorPickerProps {
   value: string;
+  direction: string;
   onChange: (color: string) => void;
 }
 
-export default function ColorPicker({ value, onChange }: ColorPickerProps) {
+export default function ColorPicker({ value, direction, onChange }: ColorPickerProps) {
   const [hsvs, setHsvs] = useState<[number, number, number][]>(() =>
     parseColors(value).map(hexToHsv)
   );
@@ -88,22 +96,35 @@ export default function ColorPicker({ value, onChange }: ColorPickerProps) {
     onChange(next.map(([h, s, v]) => hsvToHex(h, s, v)).join(','));
   }
 
+  const hexColors = hsvs.map(([h, s, v]) => hsvToHex(h, s, v));
+  const bg = pinBackground(hexColors, direction);
+
   return (
     <div className="flex flex-col gap-2">
       <label className="block text-sm font-semibold text-gray-700">Choose colors</label>
-      <div className="flex gap-2">
-        {hsvs.map(([h, s, v], i) => (
-          <div key={i} className="flex-1 flex flex-col gap-1.5">
-            <div className="h-5 rounded" style={{ background: hsvToHex(h, s, v) }} />
-            <Sq h={h} s={s} v={v} onSV={(ns, nv) => updateHsv(i, h, ns, nv)} />
-            <input
-              type="range" min={0} max={360} value={h}
-              className="color-slider w-full"
-              style={{ background: RAINBOW }}
-              onChange={e => updateHsv(i, +e.target.value, s, v)}
-            />
-          </div>
-        ))}
+      <div className="flex items-center gap-4">
+        <div className="flex gap-2 flex-1">
+          {hsvs.map(([h, s, v], i) => (
+            <div key={i} className="flex-1 flex flex-col gap-1.5">
+              <Sq h={h} s={s} v={v} onSV={(ns, nv) => updateHsv(i, h, ns, nv)} />
+              <input
+                type="range" min={0} max={360} value={h}
+                className="color-slider w-full"
+                style={{ background: RAINBOW }}
+                onChange={e => updateHsv(i, +e.target.value, s, v)}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-center" style={{ width: 56, height: 56 }}>
+          <div style={{
+            width: 40, height: 40,
+            borderRadius: '50% 50% 50% 0',
+            transform: 'rotate(-45deg)',
+            background: bg,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+          }} />
+        </div>
       </div>
     </div>
   );

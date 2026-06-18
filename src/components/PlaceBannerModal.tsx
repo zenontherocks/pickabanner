@@ -78,7 +78,7 @@ export default function PlaceBannerModal({ open, onClose, onSubmit }: PlaceBanne
         </div>
 
         <form onSubmit={handleSubmit} className="px-5 py-4 flex flex-col gap-5">
-          <ColorPicker value={color} onChange={setColor} />
+          <ColorPicker value={color} direction={direction} onChange={setColor} />
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Stripe direction</label>
